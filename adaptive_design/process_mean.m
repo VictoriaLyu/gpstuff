@@ -1,0 +1,4 @@
+function y = process_mean(x, X0, Y0, Kinv, gprocess)
+kvec = gp_cov(gprocess, x, X0);
+y = kvec * Kinv * Y0;
+end

@@ -1,0 +1,37 @@
+clear all; close all; clc;
+
+currentFolder = pwd;
+parentFolder = fileparts(currentFolder);
+addpath(parentFolder);
+
+startup;
+
+% 2d %
+I = 20;
+d = 2;
+budget = 150;
+m0 = 50;
+fun = @braninsc2;
+
+
+% model = {'gauss', 't', 'probit', 'mgauss', 'mprobit'};
+model = {'mgauss', 'mprobit'};
+design = {'MCU', 'tMSE', 'cSUR', 'ICU'};
+
+noisestructure = {'t_constdf', 't_constdf', 'mixed', 't_heterodf'};
+noisevar = {'small', 'large', 'mixed', 'hetero'};
+
+batch = {'null', 'null', 'null', 'null'};
+r = 1;
+
+for i = 1:size(noisestructure,2)
+    for j = 1:size(design,2)
+        for jj = 1:size(model, 2)
+            
+            [x_seq, y_seq, r_seq, ee, er, bias, metric, t, Ef, Varf, l, sigma2, sigman, steps, t_optim, t_gen] = updategppar(I, k, m0, d, budget, fun, char(noisestructure(i)), char(noisevar(i)), char(model(jj)), char(design(j)), char(batch(j)), r(1));
+            save(fullfile(parentFolder,'results/', strcat(num2str(d), 'd_', char(noisestructure(i)), '_', char(noisevar(i)),'/', char(model(jj)), '_', char(design(j)))), 'x_seq', 'y_seq', 'metric', 'ee', 'er', 'bias', 't', 'Ef','Varf','l','sigma2','sigman', 'r_seq', 'steps');
+
+
+        end
+    end
+end
