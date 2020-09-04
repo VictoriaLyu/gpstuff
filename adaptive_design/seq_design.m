@@ -10,7 +10,7 @@ function [xoptim, metric, t_optim] = seq_design(gprocess, x, y, design, xtest)
 %       GPROCESS - the GP fit used to calculate the acquisition function
 %       X - inputs
 %       Y - observations
-%       DESIGN - sequential design algorithm (MCU/cSUR)
+%       DESIGN - sequential design algorithm (cUCB/gSUR/tMSE/SUR)
 
 optim_t = tic;
 
@@ -27,15 +27,15 @@ function EI = acquiFun(gprocess, x, y, xt, design, xtest)
 %       X - inputs
 %       Y - observations
 %       XT - candidate samples
-%       DESIGN - design algorithm (MCU/tMSE/cSUR/ICU)
-%       XTEST - testing inputs to calculate ICU acquisition function
+%       DESIGN - design algorithm (cUCB/tMSE/gSUR/SUR)
+%       XTEST - testing inputs to calculate SUR acquisition function
 
 switch design
-    case 'MCU'
+    case 'cUCB'
         [Ef, Varf] = gp_pred(gprocess, x, y, xt);
         gamma = (quantile(Ef, 0.75) - quantile(Ef, 0.25))/mean(sqrt(Varf));
         EI = abs(Ef) - gamma.*sqrt(Varf)./3;
-    case 'cSUR'
+    case 'gSUR'
         [Ef, Varf] = gp_pred(gprocess, x, y, xt);
         if(isfield(gprocess.lik, 'sigma2'))
             sigmanoise = gprocess.lik.sigma2;
@@ -52,7 +52,7 @@ switch design
         w = exp(-0.5.*(Ef./sqrt(Varf + sigmaepsilon.^2)).^2)./sqrt(2*pi*(Varf + sigmaepsilon.^2));
         % eq. 3.5 %
         EI = -Varf.*w;
-    case 'ICU'
+    case 'SUR'
         pcr = 0.4;
         [Efall, Covfall] = gp_jpred(gprocess, x, y, [xtest;xt]);
         n = size(xtest,1);
@@ -79,7 +79,7 @@ switch design
             EI = sum(ilocal)';
         end
        
-    case 'ICU-C'
+    case 'SUR-C'
         pcr = 0.4;
         [Efall, Covfall] = gp_jpred(gprocess, x, y, [xtest;xt]);
         n = size(xtest,1);
@@ -117,7 +117,7 @@ switch design
             EI = sum(ilocal)';
         end
         
-    case 'cSUR-C'
+    case 'gSUR-C'
         [Ef, Varf] = gp_pred(gprocess, x, y, xt);
         
         if(isfield(gprocess.lik, 'sigma2'))

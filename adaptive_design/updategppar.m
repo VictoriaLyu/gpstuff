@@ -22,7 +22,7 @@ function [x_seq, y_seq, ee, er, bias, metric, t, Ef, Varf, l, sigma2, sigman, t_
 %       'hetero'
 %       model - Gaussian Process ('gauss') or t-GP ('t') or Cl-GP
 %       ('probit') or MGP ('mgauss') or MCl-GP ('mprobit')
-%       design - 'MCU', 'cSUR', 'tMSE' or 'ICU'
+%       design - 'cUCB', 'gSUR', 'tMSE' or 'SUR'
 
 %   Outputs:
 %       x_seq - designs 

@@ -17,8 +17,7 @@ function [x_seq, y_seq, metric, time, ee, er, bias, Ef, Varf, l, sigma2, sigman,
 %       noisevar - variance of noise: 'small' (0.1), 'large'(1), 'mixed', 
 %       or 'hetero'
 %       model - GP or t-GP
-%       design - 'MCU', 'cSUR', 'ABSUR'
-%       batch - 'FB', 'MLB', 'RB', 'ABSUR'
+%       design - 'cUCB', 'gSUR', 'ABSUR'
 %       t0 - hyperparameter in ABSUR
 %       lambda and pcr - hyperparameters in estimating the model 
 %       performance for test set xtt
@@ -39,10 +38,7 @@ function [x_seq, y_seq, metric, time, ee, er, bias, Ef, Varf, l, sigma2, sigman,
 %       sigman - sigma2 in likelihood 
 %       steps - design size
 %       t_optim - time to optimize acquisition function 
-%       t_gen - time to generate observation
-%       overhead - c_over in ABSUR/ the estimated overhead to optimize the 
-%       acquisition function 
-%       gamma - hyperparameter in MLB and RB 
+%       t_gen - time to generate observation 
 
 if (nargin < 10)
     pcr = 0;

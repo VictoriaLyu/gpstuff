@@ -50,7 +50,7 @@ sigma2 = exp(w(1))^2;
 l = exp(w(2:(2+d-1)));
 
 if (ismember(model, {'gauss', 't', 'mgauss'}))
-    sigman = exp(w(end));
+    sigman = exp(w(2+d));
 else
     sigman = 0;
 end

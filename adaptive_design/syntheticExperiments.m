@@ -46,10 +46,10 @@ I = 20;
 d = 2;
 budget = 150;
 m0 = 50;
-% fun = @braninsc2;
+fun = @braninsc2;
 % fun = @michal;
 % fun = @gp;
-fun = @tp;
+% fun = @tp;
 
 %%%% 6d %%%%%
 % 
@@ -78,7 +78,7 @@ model = {'gauss', 't', 'probit'};
 
 %%% design %%%
 
-design = {'MCU', 'tMSE', 'cSUR', 'ICU'};
+design = {'cUCB', 'tMSE', 'gSUR', 'SUR'};
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
