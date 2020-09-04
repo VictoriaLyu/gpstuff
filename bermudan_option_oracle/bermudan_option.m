@@ -12,7 +12,7 @@ startup;
 n = 10;
 
 method = {'gauss', 't', 'probit', 'mgauss', 'mprobit'};
-design = {'MCU', 'tMSE', 'cSUR', 'ICU'};
+design = {'cUCB', 'tMSE', 'gSUR', 'SUR'};
 
 %%%%%% 2D bermudan put %%%%%%
 model.km_batch = 15;

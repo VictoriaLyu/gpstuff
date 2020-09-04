@@ -14,7 +14,7 @@ function[fit, timeElapsed, nsims, empLoss] = osp_seq_design(model)
 % PARAMS:
 %       model - a list including all parameters for American put/call
 %       option simulation, and the model (GP/t-GP) and designs
-%       (MCU/tMSE/cSUR/ICU) to estimate the stoppint criteria
+%       (cUCB/tMSE/gSUR/SUR) to estimate the stoppint criteria
 
 
 M = model.T/model.dt;
@@ -42,7 +42,7 @@ update_kernel_iters = (0:10:model.adaptive_grid_loop)';   % when to refit the wh
 
 init_grid = model.init_grid;
 
-% % testing size for ICU 
+% % testing size for SUR 
 switch d
     case 1
         nt = 100;
@@ -153,8 +153,8 @@ for i = (M-1):-1:1
         running_budget = running_budget + model.km_batch * K0;
         step = 1;
         
-        % test points for ICU
-        if (strcmp(design, 'ICU'))
+        % test points for SUR
+        if (strcmp(design, 'SUR'))
             xtest = lhsCons(nt, lhs_rect);
             xt_dens = lognpdf(xtest(:,1), log(model.x0(1))+(model.r - model.div - model.sigma(1)^2/2)*i*model.dt, model.sigma(1)*sqrt(i*model.dt));
 

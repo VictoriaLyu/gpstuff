@@ -25,7 +25,7 @@ end
 
 function EI = acquiFun(gprocess, x, y, r0, xt, model, design, i, xtest, xt_dens)
 
-% Acquisition function for MCU, tMSE, cSUR and ICU
+% Acquisition function for cUCB, tMSE, gSUR and SUR
 
 % Description:
 %   ACQUIFUN calculates the weighted acquisition function in sequential
@@ -38,11 +38,11 @@ function EI = acquiFun(gprocess, x, y, r0, xt, model, design, i, xtest, xt_dens)
 %       R - batch size
 %       XT - candidate samples
 %       MODEL - GP model(GP/t-GP/Cl-GP/MCl-GP/MGP)
-%       XTEST and XT_DENS - testing samples and their weights for ICU
+%       XTEST and XT_DENS - testing samples and their weights for SUR
 
 d = size(x, 2);
 switch design
-    case 'cSUR'
+    case 'gSUR'
         [Ef, Varf] = gp_pred(gprocess, x, y, xt);
         Ef = Ef(:,1);
         switch model.method
@@ -56,7 +56,7 @@ switch design
         % calculates the reduced empirical error %
         EI = -normcdf( -abs(Ef)./sqrt(abs(Varf)) ) + normcdf( -abs(Ef)./sqrt(abs(Varfnew)));
         
-    case 'MCU'
+    case 'cUCB'
         [Ef, Varf] = gp_pred(gprocess, x, y, xt);
         Ef = Ef(:,1);
         % calculate the local empirical error %
@@ -96,7 +96,7 @@ switch design
 end
 
 % density of x %
-if (~strcmp(design, 'ICU'))
+if (~strcmp(design, 'SUR'))
     x_dens = lognpdf(xt(:,1), log(model.x0(1))+(model.r - model.div - model.sigma(1)^2/2)*i*model.dt, model.sigma(1)*sqrt(i*model.dt));
 
     if ( d >= 2 )
@@ -110,21 +110,21 @@ end
         
 % excludes deep in-the-money designs %
 if (d == 2  && model.K == 40)
-    if (~strcmp(design, 'ICU'))
+    if (~strcmp(design, 'SUR'))
         x_dens(xt(:,1) + xt(:,2) > 80) = 0;
     else
         x_dens(xt(:,1) + xt(:,2) > 80) = Inf;
     end
 end
 if (d == 2  && model.K == 100)
-    if (~strcmp(design, 'ICU'))
+    if (~strcmp(design, 'SUR'))
         x_dens(xt(:,1) < 100 & xt(:,2) < 100) = 0;
     else
         x_dens(xt(:,1) < 100 & xt(:,2) < 100) = Inf;
     end
 end
 if (d == 3  && model.K == 100)
-    if (~strcmp(design, 'ICU'))
+    if (~strcmp(design, 'SUR'))
         x_dens(xt(:,1) < 100 & xt(:,2) < 100 & xt(:,3) < 100) = 0;
     else
         x_dens(xt(:,1) < 100 & xt(:,2) < 100 & xt(:,3) < 100) = Inf;
