@@ -9,17 +9,23 @@ if ( d == 1 )
 end
 
 if ( d == 2 )
-    % Approximate empirical error rate %
-    rng default  % For reproducibility
-    p = sobolset(2,'Skip',1e3,'Leap',1e2);
-    p = scramble(p,'MatousekAffineOwen');
-    xtt = net(p,100000);
-    f = fun(xtt);
-    xt1 = xtt(abs(f) < 0.5,:);
-    xt1 = xt1(1:400,:);
-    xt2 = xtt(abs(f) >= 0.5,:);
-    xt2 = xt2(1:100,:);
-    xtt = [xt1;xt2];
+    if (~isequal(fun, @braninsc2))
+        x1 = repmat(linspace(0,1,m0)',1,m0);
+        x2 = repmat(linspace(0,1,m0)',1,m0)';
+        xtt = [x1(:) x2(:)];
+    else
+        % Approximate empirical error rate %
+        rng default  % For reproducibility
+        p = sobolset(2,'Skip',1e3,'Leap',1e2);
+        p = scramble(p,'MatousekAffineOwen');
+        xtt = net(p,100000);
+        f = fun(xtt);
+        xt1 = xtt(abs(f) < 0.5,:);
+        xt1 = xt1(1:400,:);
+        xt2 = xtt(abs(f) >= 0.5,:);
+        xt2 = xt2(1:100,:);
+        xtt = [xt1;xt2];
+    end
 end
 
 if ( d == 6 )
