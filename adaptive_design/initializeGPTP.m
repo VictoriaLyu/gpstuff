@@ -1,4 +1,4 @@
-function fun = initializeGPTP(d, N0, original_func, noisestructure, noisevar)
+function [fun, X0, Y0, Kmatinv] = initializeGPTP(d, N0, original_func, noisestructure, noisevar)
 
 % Initializes true function for a Gaussian/T process
 %
@@ -14,9 +14,15 @@ function fun = initializeGPTP(d, N0, original_func, noisestructure, noisevar)
 % initialize gp function
 rng(0);
 X0 = lhsdesign(N0, d);
+if (strcmp(noisevar, 'small'))
+    act_var = 0.01;
+else
+    act_var = 1;
+end
+    
 gpcf_init = gpcf_sexp('lengthScale',repmat(0.2,1,d), 'magnSigma2', 2);
 
-gprocess_init = gp_set('lik', lik_gaussian('sigma2', 0), 'cf', gpcf_init, 'jitterSigma2', 1e-9);    
+gprocess_init = gp_set('lik', lik_gaussian('sigma2', act_var), 'cf', gpcf_init, 'jitterSigma2', 1e-9);    
 
 % covariance matrix
 Kmat = gp_cov(gprocess_init, X0, X0);
@@ -35,11 +41,6 @@ Y0 = genFun(X0, original_func, noisestructure, noisevar, f);
 
 % calculate posterior mean
 if (strcmp(noisestructure, 't_constdf'))
-    if (strcmp(noisevar, 'small'))
-        act_var = 0.1;
-    else
-        act_var = 1;
-    end
     gprocess_init = gp_set('lik', lik_t('sigma2', act_var, 'nu', 3), 'cf', gpcf_init, 'jitterSigma2', 1e-9);
     [Ef, Varf, K, L, fhat] = gp_pred(gprocess_init, X0, Y0, X0);
     Y0 = fhat;
