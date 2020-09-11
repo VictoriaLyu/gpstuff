@@ -67,6 +67,10 @@ fun = @braninsc2;
 noisestructure = {'t_constdf', 't_constdf', 'mixed', 't_heterodf'}; 
 noisevar = {'small', 'large', 'mixed', 'hetero'}; 
 
+% %%% noise cases for GP/TP true function %%%
+% 
+% noisestructure = {'normal', 'normal', 't_constdf', 't_constdf'}; 
+% noisevar = {'small', 'large', 'small', 'large'}; 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
